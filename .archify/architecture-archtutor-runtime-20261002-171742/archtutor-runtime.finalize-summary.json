@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "finalize",
+  "status": "fail",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "/Users/apple/witwicky/.archify/architecture-archtutor-runtime-20261002-171742/candidate.json",
+    "sha256": "7902f16d33610bcf2bcf25b2708233a86a678fd9e77d604a2e84b1e9b9dcc62f",
+    "bytes": 7602
+  },
+  "artifact": {
+    "path": "/Users/apple/witwicky/.archify/architecture-archtutor-runtime-20261002-171742/archtutor-runtime.html",
+    "sha256": "71e3341b9ff22dbfaa6052c30b28c5ac2b5ac71a4946a334061768a42f023d17",
+    "bytes": 765991
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "fail"
+  },
+  "failedStage": "browser-check",
+  "diagnostics": [
+    {
+      "code": "viewer/evidence-path-conflict",
+      "severity": "error",
+      "message": "browser-check will not replace the existing unowned evidence path \"/Users/apple/witwicky/.archify/architecture-archtutor-runtime-20261002-171742/archtutor-runtime.browser-check.json\".",
+      "subject": {
+        "artifact": "/Users/apple/witwicky/.archify/architecture-archtutor-runtime-20261002-171742/archtutor-runtime.html",
+        "evidencePath": "/Users/apple/witwicky/.archify/architecture-archtutor-runtime-20261002-171742/archtutor-runtime.browser-check.json"
+      },
+      "evidence": {
+        "reason": {
+          "code": "ownership-artifact-mismatch"
+        }
+      },
+      "supportedFixes": [
+        "move the conflicting file aside, or choose a separate --out-dir, then rerun browser-check"
+      ]
+    }
+  ],
+  "diagnosticSummary": {
+    "total": 1,
+    "shown": 1,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "/Users/apple/witwicky/.archify/architecture-archtutor-runtime-20261002-171742/archtutor-runtime.finalize.json",
+    "summaryReceipt": "/Users/apple/witwicky/.archify/architecture-archtutor-runtime-20261002-171742/archtutor-runtime.finalize-summary.json",
+    "browserCheckReceipt": "/Users/apple/witwicky/.archify/architecture-archtutor-runtime-20261002-171742/archtutor-runtime.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.0.1",
+    "availableVersion": "3.0.1",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-02T11:49:42.857Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 560
+}

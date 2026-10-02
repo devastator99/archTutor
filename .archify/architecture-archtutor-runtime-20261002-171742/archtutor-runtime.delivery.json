@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "295b2933-01e1-42f2-851e-bff277820e5f",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "/Users/apple/witwicky/.archify/architecture-archtutor-runtime-20261002-171742/candidate.json",
+  "output": "/Users/apple/witwicky/.archify/architecture-archtutor-runtime-20261002-171742/archtutor-runtime.html",
+  "specification": {
+    "sha256": "7902f16d33610bcf2bcf25b2708233a86a678fd9e77d604a2e84b1e9b9dcc62f",
+    "bytes": 7602
+  },
+  "artifact": {
+    "sha256": "71e3341b9ff22dbfaa6052c30b28c5ac2b5ac71a4946a334061768a42f023d17",
+    "bytes": 765991
+  }
+}

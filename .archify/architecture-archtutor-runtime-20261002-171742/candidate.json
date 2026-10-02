@@ -1,0 +1,274 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "ArchTutor Runtime Architecture",
+    "output": ".archify/architecture-archtutor-runtime-20261002-171742/archtutor-runtime.html",
+    "quality_profile": "showcase",
+    "locale": "en"
+  },
+  "components": [
+    {
+      "id": "student",
+      "type": "external",
+      "label": "Student browser",
+      "sublabel": "React 19 \u00b7 Konva canvas",
+      "pos": [
+        60,
+        50
+      ],
+      "size": [
+        175,
+        64
+      ]
+    },
+    {
+      "id": "rsc",
+      "type": "frontend",
+      "label": "App Router pages",
+      "sublabel": "SSR \u00b7 server-side fetch",
+      "pos": [
+        120,
+        215
+      ],
+      "size": [
+        190,
+        64
+      ]
+    },
+    {
+      "id": "proxy",
+      "type": "security",
+      "label": "API proxy",
+      "sublabel": "strips provenance",
+      "pos": [
+        380,
+        215
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "FastAPI API",
+      "sublabel": "9 endpoints \u00b7 no auth \u00b7 512 KB body cap",
+      "pos": [
+        140,
+        380
+      ],
+      "size": [
+        480,
+        64
+      ]
+    },
+    {
+      "id": "core",
+      "type": "backend",
+      "label": "Deterministic core",
+      "sublabel": "validate \u00b7 learn \u00b7 diff",
+      "pos": [
+        175,
+        540
+      ],
+      "size": [
+        195,
+        64
+      ]
+    },
+    {
+      "id": "tutor",
+      "type": "backend",
+      "label": "Guarded tutor",
+      "sublabel": "LLM prose \u00b7 number gate",
+      "pos": [
+        400,
+        540
+      ],
+      "size": [
+        200,
+        64
+      ]
+    },
+    {
+      "id": "postgres",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "2 tables \u00b7 JSONB",
+      "pos": [
+        760,
+        380
+      ],
+      "size": [
+        185,
+        64
+      ]
+    },
+    {
+      "id": "llm",
+      "type": "external",
+      "label": "LLM provider",
+      "sublabel": "OpenAI-compatible \u00b7 8s",
+      "pos": [
+        402,
+        770
+      ],
+      "size": [
+        195,
+        64
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Next.js 16 \u00b7 Node :3000",
+      "wraps": [
+        "rsc",
+        "proxy"
+      ],
+      "pad": 28
+    },
+    {
+      "kind": "security-group",
+      "label": "provenance stripped",
+      "wraps": [
+        "proxy"
+      ],
+      "pad": 16
+    },
+    {
+      "kind": "region",
+      "label": "FastAPI \u00b7 uvicorn :8000 \u00b7 no auth",
+      "wraps": [
+        "api",
+        "core",
+        "tutor"
+      ],
+      "pad": 28
+    }
+  ],
+  "connections": [
+    {
+      "id": "page-ssr",
+      "from": "student",
+      "to": "rsc",
+      "label": "SSR pages"
+    },
+    {
+      "id": "browser-fetch",
+      "from": "student",
+      "to": "proxy",
+      "label": "fetch /api/*",
+      "variant": "emphasis"
+    },
+    {
+      "id": "rsc-fetch",
+      "from": "rsc",
+      "to": "api",
+      "label": "direct fetch"
+    },
+    {
+      "id": "proxy-forward",
+      "from": "proxy",
+      "to": "api",
+      "label": "HTTP forward",
+      "variant": "security"
+    },
+    {
+      "id": "api-grade",
+      "from": "api",
+      "to": "core",
+      "label": "validate"
+    },
+    {
+      "id": "api-explain",
+      "from": "api",
+      "to": "tutor",
+      "label": "explain"
+    },
+    {
+      "id": "api-sql",
+      "from": "api",
+      "to": "postgres",
+      "label": "SQLAlchemy ORM"
+    },
+    {
+      "id": "tutor-llm",
+      "from": "tutor",
+      "to": "llm",
+      "label": "untrusted output gated",
+      "variant": "security"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Deterministic core is the source of truth",
+      "items": [
+        "measurement \u2192 geometry \u2192 validation \u2192 learning; no HTTP, DB or LLM import in any domain module",
+        "Six checks in a fixed order, all always run \u2014 a wrong-scale sheet reports every downstream cause, not the first",
+        "Exact Decimal throughout; wire values are strings so 4.6 mm never becomes 4.5999999999999996",
+        "explain reads the stored result, never live geometry, so prose always matches the verdict on screen"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Trust boundaries",
+      "items": [
+        "No authentication anywhere \u2014 zero authn, authz, tenant scoping or admin path by explicit decision",
+        "Proxy is the one enforced provenance gate: drops cookie/origin/referer, target host comes only from config, so it is not an open forwarder",
+        "Tutor output is untrusted text; any number absent from the validator payload discards the whole explanation",
+        "exercise_attempts has no owner column, so every stored student_geometry is readable by any reachable client",
+        "Posture rests entirely on the loopback bind address (HOST=127.0.0.1), not on any code control"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Frontend runtime",
+      "items": [
+        "All state is local useState in one component \u2014 no store, no query library, no providers, no middleware",
+        "Two base URLs on purpose: server components resolve an internal host, the bundle carries /api",
+        "With NEXT_PUBLIC_API_BASE_URL=/api the CORS boundary disappears and the API is never exposed publicly",
+        "No CDN, analytics or runtime third-party fetch; fonts are self-hosted at build time"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "External dependencies",
+      "items": [
+        "PostgreSQL 14+ via SQLAlchemy and psycopg3; URL read from settings so alembic.ini holds no credentials",
+        "One outbound integration only: an OpenAI-compatible chat/completions API (Groq in development)",
+        "Both are optional \u2014 blank TUTOR_BASE_URL disables the tutor and deterministic prose is served instead",
+        "No queue, worker, cache, webhook, object storage or third-party SDK of any kind"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Worth flagging",
+      "items": [
+        "limit and offset are unvalidated \u2014 /exercises?limit=-1 returns 500, and a huge limit reads unbounded",
+        "assert_no_secrets is never invoked from a route or a test, despite its docstring claiming it runs",
+        "httpx is declared only under [dev] yet is a runtime import; a production install silently degrades every explanation",
+        "The size limiter buffers the full body before checking length, so it does not actually bound memory"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Load-bearing sources",
+      "items": [
+        "backend/app/main.py:31 \u2014 create_app(); :48 CORS; :100 module-level ASGI app",
+        "backend/app/api/security.py:18 \u2014 'no authentication, no rate limiting, no per-user identity'",
+        "backend/app/api/routes/exercises.py:64 \u2014 the only router the frontend actually calls",
+        "backend/app/validation/engine.py:29 \u2014 CHECKS, a fixed ordered tuple of six",
+        "backend/app/learning/feedback.py:103 \u2014 assemble(): findings into seven-field issues",
+        "backend/app/tutor/service.py:147 \u2014 explain_issue(), the only egress path",
+        "backend/app/tutor/guard.py:122 \u2014 allowed_numbers(), the unverified-figure gate",
+        "frontend/app/api/[...path]/route.ts:31 \u2014 HOP_BY_HOP incl. cookie/origin/referer",
+        "Cited by path and line; no git revision is pinned because this tree is not a repository"
+      ]
+    }
+  ]
+}
